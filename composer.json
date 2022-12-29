@@ -1,0 +1,11 @@
+{
+    "name": "alex/csv-parser",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "Alex\\CsvParser\\": "src/"
+        }
+    },
+    "minimum-stability": "dev",
+    "require": {}
+}
