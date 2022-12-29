@@ -1,0 +1,11 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"phpSniffer.executablesFolder": "vendor/squizlabs/php_codesniffer/bin",
+		"phpSniffer.standard": "PSR12",
+	}
+}

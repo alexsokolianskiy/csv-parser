@@ -7,5 +7,7 @@
         }
     },
     "minimum-stability": "dev",
-    "require": {}
+    "require-dev": {
+        "squizlabs/php_codesniffer": "*"
+    }
 }
