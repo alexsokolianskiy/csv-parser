@@ -3,16 +3,14 @@
 require __DIR__ . '/../vendor/autoload.php';
 
 use Alex\CsvParser\Models\User;
+use Alex\CsvParser\Services\Readers\CsvReader;
 
 function getFile()
 {
-    $user = new User();
-    $user->setId(1);
-    $user->setEmail('example@gmail.com');
-    $user->setPhone('+222222222');
-    $user->setCard('11111111111');
-
-    var_dump($user);
+    $csvReader = new CsvReader(__DIR__ . '/../example-small.csv');
+    $columns = $csvReader->readColumnNames();
+    $data = $csvReader->readData();
+    var_dump($data);
 }
 
 getFile();
