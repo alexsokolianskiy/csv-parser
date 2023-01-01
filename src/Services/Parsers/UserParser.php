@@ -9,10 +9,12 @@ use Alex\CsvParser\Services\Readers\DataReaderInterface;
 
 class UserParser implements UserParserInterface
 {
+    private ?array $userColumns;
+
     public function __construct(
         private DataReaderInterface $dataReader,
-        private ?array $userColumns = null
     ) {
+        $this->userColumns = null;
     }
 
     public function getUsers(): array
@@ -30,28 +32,35 @@ class UserParser implements UserParserInterface
     {
         $user = new User();
         foreach (UserColumn::cases() as $userColumn) {
-            $value = $this->getColumIndexByName($userColumn);
+            $value = $this->getColumIndexByName($userColumn->name);
+            if (is_null($value)) {
+                continue;
+            }
+
             switch ($userColumn) {
                 case UserColumn::ID:
-                    $user->setId($value);
+                    $user->setId($row[$value]);
                     break;
                 case UserColumn::CARD:
-                    $user->setCard($value);
+                    $user->setCard($row[$value]);
                     break;
                 case UserColumn::EMAIL:
-                    $user->setEmail($value);
+                    $user->setEmail($row[$value]);
                     break;
                 case UserColumn::PHONE:
-                    $user->setPhone($value);
+                    $user->setPhone($row[$value]);
+                    break;
             }
         }
 
         return $user;
     }
 
-    private function getColumIndexByName(UserColumn $userColumn): string
+    private function getColumIndexByName(string $userColumn): ?string
     {
-        return $this->getColumnNameIndexes()[$userColumn];
+        $indexes = $this->getColumnNameIndexes();
+
+        return isset($indexes[$userColumn]) ? $indexes[$userColumn] : null;
     }
 
     private function getColumnNameIndexes(): array
@@ -62,15 +71,14 @@ class UserParser implements UserParserInterface
 
         $columns = $this->dataReader->readColumnNames();
         $userColumns = [
-            UserColumn::ID,
-            UserColumn::EMAIL,
-            UserColumn::PHONE,
-            UserColumn::CARD,
-            UserColumn::PARENT_ID
+            UserColumn::ID->name,
+            UserColumn::EMAIL->name,
+            UserColumn::PHONE->name,
+            UserColumn::CARD->name
         ];
         array_walk($columns, function ($column, $key) use (&$userColumns) {
             foreach ($userColumns as $userColumn) {
-                if ($column == $userColumn->name) {
+                if ($column == $userColumn) {
                     $userColumns[$userColumn] = $key;
                 }
             }
