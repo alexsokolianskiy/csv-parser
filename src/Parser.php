@@ -9,12 +9,18 @@ use Alex\CsvParser\Services\Sorts\DoublesList;
 
 function getFile()
 {
-    $csvReader = new CsvReader(__DIR__ . '/../example-small.csv');
+    $csvReader = new CsvReader(__DIR__ . '/../example-big.csv');
     $userParser = new UserParser($csvReader);
     $users = $userParser->getUsers();
     $dList = new DoublesList($users);
-    $result = $dList->findDoubles([UserColumn::EMAIL]);
-    var_dump($result);
+    $dList->findDoubles([UserColumn::EMAIL]);
+    $dList->findDoubles([UserColumn::PHONE]);
+    $dList->findDoubles([UserColumn::CARD]);
+    $result = $dList->getResult();
+    echo "ID,PARENT_ID\n";
+    foreach ($result as $user) {
+        echo sprintf("%d,%d\n", $user->getId(), $user->getParent());
+    }
 }
 
 getFile();
