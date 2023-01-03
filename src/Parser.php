@@ -5,12 +5,16 @@ require __DIR__ . '/../vendor/autoload.php';
 use Alex\CsvParser\Enums\UserColumn;
 use Alex\CsvParser\Services\Parsers\UserParser;
 use Alex\CsvParser\Services\Readers\CsvReader;
+use Alex\CsvParser\Services\Readers\StreamReader;
 use Alex\CsvParser\Services\Sorts\DoublesList;
 
 function getFile()
 {
-    $csvReader = new CsvReader(__DIR__ . '/../example-big.csv');
-    $userParser = new UserParser($csvReader);
+    // $csvReader = new CsvReader(__DIR__ . '/../example-big.csv');
+    // $userParser = new UserParser($csvReader);
+    $input_data = file_get_contents("php://stdin");
+    $streamReader = new StreamReader($input_data);
+    $userParser = new UserParser($streamReader);
     $users = $userParser->getUsers();
     $dList = new DoublesList($users);
     $dList->findDoubles([UserColumn::EMAIL]);
