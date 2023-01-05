@@ -6,6 +6,7 @@ use Alex\CsvParser\Enums\UserColumn;
 use Alex\CsvParser\Services\Parsers\UserParser;
 use Alex\CsvParser\Services\Readers\CsvReader;
 use Alex\CsvParser\Services\Readers\StreamReader;
+use Alex\CsvParser\Services\Sorts\ChainList;
 use Alex\CsvParser\Services\Sorts\DoublesList;
 
 function getFile()
@@ -16,11 +17,8 @@ function getFile()
     $streamReader = new StreamReader($input_data);
     $userParser = new UserParser($streamReader);
     $users = $userParser->getUsers();
-    $dList = new DoublesList($users);
-    $dList->findDoubles([UserColumn::EMAIL]);
-    $dList->findDoubles([UserColumn::PHONE]);
-    $dList->findDoubles([UserColumn::CARD]);
-    $result = $dList->getResult();
+    $list = new ChainList($users);
+    $result = $list->build();
     echo "ID,PARENT_ID\n";
     foreach ($result as $user) {
         echo sprintf("%d,%d\n", $user->getId(), $user->getParent());
