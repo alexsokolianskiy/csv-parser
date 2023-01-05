@@ -7,7 +7,6 @@ use Alex\CsvParser\Services\Parsers\UserParser;
 use Alex\CsvParser\Services\Readers\CsvReader;
 use Alex\CsvParser\Services\Readers\StreamReader;
 use Alex\CsvParser\Services\Sorts\ChainList;
-use Alex\CsvParser\Services\Sorts\DoublesList;
 
 function getFile()
 {
@@ -18,7 +17,10 @@ function getFile()
     $userParser = new UserParser($streamReader);
     $users = $userParser->getUsers();
     $list = new ChainList($users);
+    $before = microtime(true);
     $result = $list->build();
+    $after = microtime(true);
+    echo ($after - $before) . "\n";
     echo "ID,PARENT_ID\n";
     foreach ($result as $user) {
         echo sprintf("%d,%d\n", $user->getId(), $user->getParent());
